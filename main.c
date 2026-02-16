@@ -1,4 +1,5 @@
 #include "push_swap.h"
+#include "utils.h"
 #include <libft.h>
 #include <limits.h>
 #include <stdbool.h>
@@ -31,35 +32,6 @@ bool ft_strtoi(const char *str, int *out) {
   return (n >= INT_MIN && n <= INT_MAX);
 }
 
-void free_stack(t_stack *stack) {
-  if (stack) {
-    free(stack->stack);
-    free(stack);
-  }
-}
-
-t_stack *alloc_stack(size_t size) {
-  t_stack *stack;
-
-  stack = malloc(sizeof(*stack));
-  if (!stack)
-    return (NULL);
-  stack->stack = malloc(sizeof(int) * size);
-  if (!stack->stack)
-    return (free(stack), NULL);
-  stack->size = 0;
-  return (stack);
-}
-
-t_stack *init_stack(int *nums, size_t size) {
-  t_stack *stack = alloc_stack(size);
-  if (!stack)
-    return NULL;
-  ft_memcpy(stack->stack, nums, size * sizeof(int));
-  stack->size = size;
-  return (stack);
-}
-
 int *parse_ints(char **strs, size_t size) {
   int *nums = malloc(size * sizeof(int));
   if (!nums)
@@ -71,15 +43,6 @@ int *parse_ints(char **strs, size_t size) {
     i++;
   }
   return nums;
-}
-
-t_stack *dup_stack(t_stack *stack) {
-  t_stack *new = alloc_stack(stack->size);
-  if (!new)
-    return NULL;
-  ft_memcpy(new->stack, stack->stack, stack->size * sizeof(int));
-  new->size = stack->size;
-  return new;
 }
 
 bool has_duplicates(t_stack *stack) {
