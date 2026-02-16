@@ -52,35 +52,6 @@ bool stack_is_sorted(t_stack *s) {
   return true;
 }
 
-void swap_int(int *a, int *b) {
-  int tmp = *a;
-  *a = *b;
-  *b = tmp;
-}
-
-void stack_swap(t_stack *s) {
-  if (s->size < 2)
-    return;
-  swap_int(&s->stack[s->size], &s->stack[s->size - 1]);
-}
-
-bool stack_push(t_stack *from, t_stack *to) {
-  if (from->size < 1)
-    return false;
-  int n = from->stack[--from->size];
-  to->stack[to->size++] = n;
-  return true;
-}
-
-bool stack_enqueue(t_stack *from, t_stack *to) {
-  if (from->size < 1)
-    return false;
-  int value = from->stack[--from->size];
-  if (to->size > 0)
-    ft_memmove(&to->stack[1], &to->stack[0], to->size * sizeof(int));
-  to->stack[0] = value;
-  return true;
-}
 
 void pss(t_stack *a, t_stack *b) {
   for (ssize_t i = a->size - 1; i > 0; i--)
@@ -96,55 +67,6 @@ void psb(t_stack *stack) {
   for (ssize_t i = stack->size - 1; i >= 0; i--)
     printf("%zu: %08b\n", i, stack->stack[i]);
   putchar('\n');
-}
-
-// first becomes last
-void stack_rotate_up(t_stack *s) {
-  if (s->size < 2)
-    return;
-  int last = s->stack[s->size - 1];
-  ft_memmove(&s->stack[1], &s->stack[0], (s->size - 1) * sizeof(int));
-  s->stack[0] = last;
-}
-
-// last becomes first
-void stack_rotate_down(t_stack *s) {
-  if (s->size < 2)
-    return;
-  int first = s->stack[0];
-  ft_memmove(&s->stack[0], &s->stack[1], (s->size - 1) * sizeof(int));
-  s->stack[s->size - 1] = first;
-}
-
-bool intbit(int n, int pos) {
-  if (pos > 31)
-    return false;
-  return ((n >> pos) & 1) == 1;
-}
-
-void radix_bit(t_stack *a, t_stack *b, int bit) {
-  size_t i = 0;
-  // if (stack_is_sorted(a))
-  //   return;
-  while (i < a->size) {
-    int atop = a->stack[a->size - 1];
-    if (!intbit(atop, bit)) {
-      stack_push(a, b);
-      write(1, "pb\n", 3);
-      if (b->size > 1 && b->stack[0] < b->stack[1]) {
-        stack_rotate_up(b);
-        write(1, "rb\n", 3);
-      }
-    } else {
-      stack_rotate_up(a);
-      write(1, "ra\n", 3);
-    }
-    i++;
-  }
-  while (b->size > 0) {
-    stack_push(b, a);
-    write(1, "pa\n", 3);
-  }
 }
 
 void sort_three(t_stack *s) {
@@ -174,29 +96,16 @@ void sort_three(t_stack *s) {
   }
 }
 
-int stack_max(t_stack *s) {
-  int max = INT_MIN;
-  size_t i = 0;
-  while (i < s->size) {
-    if (s->stack[i] > max)
-      max = s->stack[i];
-    i++;
-  }
-  return max;
+void swap_int(int *a, int *b) {
+  int tmp = *a;
+  *a = *b;
+  *b = tmp;
 }
 
-int msb_pos_int(int x) {
-  if (x == 0)
-    return -1;
-  return 31 - __builtin_clz((unsigned int)x);
-}
-
-void radix(t_stack *a, t_stack *b) {
-  int i = 0;
-  int max = stack_max(a);
-  int bits = msb_pos_int(max) + 1;
-  while (i < bits) // max
-    radix_bit(a, b, i++);
+void stack_swap(t_stack *s) {
+  if (s->size < 2)
+    return;
+  swap_int(&s->stack[s->size], &s->stack[s->size - 1]);
 }
 
 void stack_sort(t_stack *s) {
