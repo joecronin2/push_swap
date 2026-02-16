@@ -177,8 +177,6 @@ void stack_rotate_down(t_stack *s) {
   s->stack[s->size - 1] = first;
 }
 
-// 0101
-
 bool intbit(int n, int pos) {
   if (pos > 31)
     return false;
@@ -186,13 +184,18 @@ bool intbit(int n, int pos) {
 }
 
 void radix_bit(t_stack *a, t_stack *b, int bit) {
-  size_t count = a->size;
   size_t i = 0;
-  while (i < count) {
+  // if (stack_is_sorted(a))
+  //   return;
+  while (i < a->size) {
     int atop = a->stack[a->size - 1];
     if (!intbit(atop, bit)) {
       stack_push(a, b);
       write(1, "pb\n", 3);
+      if (b->size > 1 && b->stack[0] < b->stack[1]) {
+        stack_rotate_up(b);
+        write(1, "rb\n", 3);
+      }
     } else {
       stack_rotate_up(a);
       write(1, "ra\n", 3);
@@ -202,6 +205,33 @@ void radix_bit(t_stack *a, t_stack *b, int bit) {
   while (b->size > 0) {
     stack_push(b, a);
     write(1, "pa\n", 3);
+  }
+}
+
+void sort_three(t_stack *s) {
+  int a = s->stack[2];
+  int b = s->stack[1];
+  int c = s->stack[0];
+
+  if (a > b && b < c && a < c) {
+    stack_swap(s);
+    write(1, "sa\n", 3);
+  } else if (a > b && b > c) {
+    stack_swap(s);
+    write(1, "sa\n", 3);
+    stack_rotate_down(s);
+    write(1, "rra\n", 3);
+  } else if (a > b && b < c && a > c) {
+    stack_rotate_up(s);
+    write(1, "ra\n", 3);
+  } else if (a < b && b > c && a < c) {
+    stack_swap(s);
+    write(1, "sa\n", 3);
+    stack_rotate_up(s);
+    write(1, "ra\n", 3);
+  } else if (a < b && b > c && a > c) {
+    stack_rotate_down(s);
+    write(1, "rra\n", 3);
   }
 }
 
@@ -222,7 +252,6 @@ int msb_pos_int(int x) {
   return 31 - __builtin_clz((unsigned int)x);
 }
 
-// fuck it we ball push_swap aint got shit on me
 void radix(t_stack *a, t_stack *b) {
   int i = 0;
   int max = stack_max(a);
@@ -292,6 +321,7 @@ t_stack *index_stack(t_stack *s) {
 
 void test_index() {
   t_stack *s = init_stack((int[]){5, 4, 3, 2, 1}, 5);
+  (void)s;
   // t_stack *i = index_stack(s);
 }
 
@@ -468,6 +498,16 @@ int main(int argc, char **argv) {
   b = alloc_stack(a->size);
   if (!b)
     return (free_stack(a), error());
-  radix(a, b);
+  if (a->size == 3)
+    sort_three(a);
+  else
+    radix(a, b);
   return (free_stack(a), free_stack(b), 0);
 }
+
+// TODO:
+// 2 1 0: 2 or 3 ops
+// 1 5 2 4 3: 12 ops
+// 5 random: 12 ops
+// 100: 700 ops
+// 500: 5500 ops
