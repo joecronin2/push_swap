@@ -27,7 +27,6 @@ bool ft_strtoi(const char *str, int *out) {
     return (false);
   if (negative)
     n = -n;
-  // *out = 0xFFFFFFFF ^ (int)n;
   *out = (int)n;
   return (n >= INT_MIN && n <= INT_MAX);
 }
@@ -45,7 +44,7 @@ t_stack *alloc_stack(size_t size) {
     return (NULL);
   stack->stack = malloc(sizeof(int) * size);
   if (!stack->stack)
-    return NULL;
+    return (free(stack), NULL);
   stack->size = 0;
   return (stack);
 }
@@ -124,7 +123,7 @@ bool stack_push(t_stack *from, t_stack *to) {
 bool stack_enqueue(t_stack *from, t_stack *to) {
   if (from->size < 1)
     return false;
-  int value = from->stack[--from->size]; 
+  int value = from->stack[--from->size];
   if (to->size > 0)
     ft_memmove(&to->stack[1], &to->stack[0], to->size * sizeof(int));
   to->stack[0] = value;
@@ -193,10 +192,68 @@ void radix_bit(t_stack *a, t_stack *b, int bit) {
   }
 }
 
+int stack_max(t_stack *s) {
+  int max = INT_MIN;
+  size_t i = 0;
+  while (i < s->size) {
+    if (s->stack[i] > max)
+      max = s->stack[i];
+    i++;
+  }
+  return max;
+}
+
+int msb_pos_int(int x) {
+  if (x == 0)
+    return -1;
+  return 31 - __builtin_clz((unsigned int)x);
+}
+
 void radix(t_stack *a, t_stack *b) {
   int i = 0;
-  while (i < 32) // max
+  int max = stack_max(a);
+  int bits = msb_pos_int(max) + 1;
+  while (i < bits) // max
     radix_bit(a, b, i++);
+}
+
+t_stack *index_stack(t_stack *s) {
+  t_stack *new_s;
+  t_stack *tmp;
+  size_t i;
+  size_t j;
+
+  new_s = alloc_stack(s->size);
+  if (!new_s)
+    return NULL;
+  tmp = dup_stack(s);
+  if (!tmp)
+    return (free_stack(new_s), NULL);
+  new_s->size = s->size;
+  i = 0;
+  while (i < tmp->size) {
+    j = 0;
+    while (j < tmp->size - 1) {
+      if (tmp->stack[j] > tmp->stack[j + 1])
+        swap_int(&tmp->stack[j], &tmp->stack[j + 1]);
+      j++;
+    }
+    i++;
+  }
+  i = 0;
+  while (i < s->size) {
+    j = 0;
+    while (j < tmp->size) {
+      if (s->stack[i] == tmp->stack[j]) {
+        new_s->stack[i] = (int)j;
+        break;
+      }
+      j++;
+    }
+    i++;
+  }
+  free_stack(tmp);
+  return (new_s);
 }
 
 #include <assert.h>
@@ -210,6 +267,11 @@ void radix(t_stack *a, t_stack *b) {
 // 3 011
 
 // 0b101,0b010,0b111,0b001,0b100,0b000,0b110,0b011
+
+void test_index() {
+  t_stack *s = init_stack((int[]){5, 4, 3, 2, 1}, 5);
+  t_stack *i = index_stack(s);
+}
 
 void test_radix() {
   t_stack *a = init_stack(
@@ -325,7 +387,8 @@ void test_stack(void) {
 int main(int argc, char *argv[]) {
   // test_radix();
   // test_intbit();
-  test_rotate();
+  // test_rotate();
+  // test_index();
   // test_stack();
   // test_strtoi();
   // for (int i = 0; i < argc; i++)
@@ -334,12 +397,13 @@ int main(int argc, char *argv[]) {
     return EXIT_FAILURE;
   int *i = parse_ints(&argv[1], argc - 1);
   t_stack *a = init_stack(i, argc - 1);
-  t_stack *b = alloc_stack(argc - 1);
+  t_stack *indexed = index_stack(a);
   // if (has_duplicates(a)) {
   //
   // }
-  radix(a, b);
-  // ps(a);
+  t_stack *b = alloc_stack(argc - 1);
+  radix(indexed, b);
+  // ps(indexed);
   // printf("b:\n");
   // ps(b);
   // has_duplicates(s);
