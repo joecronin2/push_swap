@@ -32,8 +32,10 @@ bool ft_strtoi(const char *str, int *out) {
 }
 
 void free_stack(t_stack *stack) {
-  free(stack->stack);
-  free(stack);
+  if (stack) {
+    free(stack->stack);
+    free(stack);
+  }
 }
 
 t_stack *alloc_stack(size_t size) {
@@ -81,13 +83,14 @@ t_stack *dup_stack(t_stack *stack) {
 }
 
 bool has_duplicates(t_stack *stack) {
+  long j;
   t_stack *dup = dup_stack(stack);
   if (!dup)
     return true;
   size_t i = 1;
   while (i < dup->size) {
     int key = dup->stack[i];
-    size_t j = i - 1;
+    j = i - 1;
     while (j >= 0 && dup->stack[j] > key) {
       dup->stack[j + 1] = dup->stack[j];
       j--;
@@ -98,6 +101,16 @@ bool has_duplicates(t_stack *stack) {
     i++;
   }
   return (free_stack(dup), false);
+}
+
+bool stack_is_sorted(t_stack *s) {
+  size_t i = 0;
+  while (i < s->size - 1) {
+    if (s->stack[i] < s->stack[i + 1])
+      return false;
+    i++;
+  }
+  return true;
 }
 
 void swap_int(int *a, int *b) {
@@ -278,7 +291,7 @@ t_stack *index_stack(t_stack *s) {
 
 void test_index() {
   t_stack *s = init_stack((int[]){5, 4, 3, 2, 1}, 5);
-  t_stack *i = index_stack(s);
+  // t_stack *i = index_stack(s);
 }
 
 void test_radix() {
@@ -392,29 +405,68 @@ void test_stack(void) {
   free(stack);
 }
 
-int main(int argc, char *argv[]) {
-  // test_radix();
-  // test_intbit();
-  // test_rotate();
-  // test_index();
-  // test_stack();
-  // test_strtoi();
-  // for (int i = 0; i < argc; i++)
-  // 	printf("%d: %s\n", i, argv[i]);
+void test_duplicates() {
+  {
+    t_stack *s = init_stack((int[]){1, 2, 3}, 3);
+    assert(!has_duplicates(s));
+    free(s);
+  }
+  {
+    t_stack *s = init_stack((int[]){1, 2, 2}, 3);
+    assert(has_duplicates(s));
+    free(s);
+  }
+  {
+    t_stack *s = init_stack((int[]){1, 4, 3, 4}, 4);
+    assert(has_duplicates(s));
+    free(s);
+  }
+}
+
+void test() {
+  test_duplicates();
+  test_radix();
+  test_intbit();
+  test_rotate();
+  test_index();
+  test_stack();
+  test_strtoi();
+}
+
+int error() {
+  write(1, "Error\n", 6);
+  return 1;
+}
+
+t_stack *prepare_stack(int *nums, size_t size) {
+  t_stack *a, *indexed;
+  a = init_stack(nums, size);
+  if (!a || has_duplicates(a))
+    return (free_stack(a), NULL);
+  indexed = index_stack(a);
+  free_stack(a);
+  return indexed;
+}
+
+int main(int argc, char **argv) {
+  t_stack *b;
+  t_stack *a;
+  // test();
+
   if (argc < 2)
-    return EXIT_FAILURE;
-  int *i = parse_ints(&argv[1], argc - 1);
-  t_stack *a = init_stack(i, argc - 1);
-  t_stack *indexed = index_stack(a);
-  // if (has_duplicates(a)) {
-  //
-  // }
-  t_stack *b = alloc_stack(argc - 1);
-  radix(indexed, b);
-  // ps(indexed);
-  // printf("b:\n");
-  // ps(b);
-  // has_duplicates(s);
-  // print_stack(s);
-  return (0);
+    return error();
+  int *nums = parse_ints(&argv[1], argc - 1);
+  if (!nums)
+    return error();
+  a = prepare_stack(nums, argc - 1);
+  free(nums);
+  if (!a)
+    return error();
+  if (stack_is_sorted(a))
+    return 0;
+  b = alloc_stack(a->size);
+  if (!b)
+    return (free_stack(a), error());
+  radix(a, b);
+  return (free_stack(a), free_stack(b), 0);
 }
