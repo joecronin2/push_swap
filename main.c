@@ -217,43 +217,51 @@ void radix(t_stack *a, t_stack *b) {
     radix_bit(a, b, i++);
 }
 
-t_stack *index_stack(t_stack *s) {
-  t_stack *new_s;
-  t_stack *tmp;
-  size_t i;
-  size_t j;
-
-  new_s = alloc_stack(s->size);
-  if (!new_s)
-    return NULL;
-  tmp = dup_stack(s);
-  if (!tmp)
-    return (free_stack(new_s), NULL);
-  new_s->size = s->size;
-  i = 0;
-  while (i < tmp->size) {
-    j = 0;
-    while (j < tmp->size - 1) {
-      if (tmp->stack[j] > tmp->stack[j + 1])
-        swap_int(&tmp->stack[j], &tmp->stack[j + 1]);
-      j++;
-    }
-    i++;
-  }
+void stack_sort(t_stack *s) {
+  size_t i, j;
   i = 0;
   while (i < s->size) {
     j = 0;
-    while (j < tmp->size) {
-      if (s->stack[i] == tmp->stack[j]) {
-        new_s->stack[i] = (int)j;
-        break;
-      }
+    while (j < s->size - 1) {
+      if (s->stack[j] > s->stack[j + 1])
+        swap_int(&s->stack[j], &s->stack[j + 1]);
       j++;
     }
     i++;
   }
+}
+
+int get_rank(int value, t_stack *sorted_tmp) {
+  size_t j;
+  j = 0;
+  while (j < sorted_tmp->size) {
+    if (value == sorted_tmp->stack[j])
+      return ((int)j);
+    j++;
+  }
+  return (-1);
+}
+
+t_stack *index_stack(t_stack *s) {
+  t_stack *new;
+  t_stack *tmp;
+  size_t i;
+
+  new = alloc_stack(s->size);
+  if (!new)
+    return NULL;
+  tmp = dup_stack(s);
+  if (!tmp)
+    return (free_stack(new), NULL);
+  new->size = s->size;
+  stack_sort(tmp);
+  i = 0;
+  while (i < s->size) {
+    new->stack[i] = get_rank(s->stack[i], tmp);
+    i++;
+  }
   free_stack(tmp);
-  return (new_s);
+  return (new);
 }
 
 #include <assert.h>
