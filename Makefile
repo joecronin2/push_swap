@@ -6,7 +6,7 @@ LIBFT = $(LIBFT_DIR)/libft.a
 CFLAGS += -I$(LIBFT_DIR)
 
 NAME = push_swap
-SRCS = main.c stack.c utils.c radix.c ops.c
+SRCS = main.c stack.c utils.c radix.c ops.c index.c
 OBJS = $(SRCS:.c=.o)
 
 all: $(NAME)

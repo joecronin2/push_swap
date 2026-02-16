@@ -22,3 +22,4 @@ void stack_rotate_up(t_stack *s);
 void stack_rotate_down(t_stack *s);
 
 void radix(t_stack *a, t_stack *b);
+t_stack *index_stack(t_stack *s);
