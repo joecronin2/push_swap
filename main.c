@@ -222,6 +222,7 @@ int msb_pos_int(int x) {
   return 31 - __builtin_clz((unsigned int)x);
 }
 
+// fuck it we ball push_swap aint got shit on me
 void radix(t_stack *a, t_stack *b) {
   int i = 0;
   int max = stack_max(a);
