@@ -22,18 +22,12 @@ static size_t stack_count_zero_bits(t_stack *s, int bit) {
 
 static void radix_bit(t_stack *a, t_stack *b, int bit) {
   size_t i = 0;
-  size_t zeros = stack_count_zero_bits(a, bit);
-  if (zeros == 0)
-    return;
-  // if (stack_is_sorted(a))
-  //   return;
   size_t count = a->size;
-  while (i < count && zeros > 0) {
+  while (i < count) {
     int atop = a->stack[a->size - 1];
     if (!intbit(atop, bit)) {
       stack_push(a, b);
       write(1, "pb\n", 3);
-			zeros--;
     } else {
       stack_rotate_up(a);
       write(1, "ra\n", 3);
@@ -67,6 +61,6 @@ void radix(t_stack *a, t_stack *b) {
   int i = 0;
   int max = stack_max(a);
   int bits = msb_pos_int(max) + 1;
-  while (i < bits) // max
+  while (i < bits && !stack_is_sorted(a)) // max
     radix_bit(a, b, i++);
 }
