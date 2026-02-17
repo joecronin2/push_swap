@@ -8,18 +8,6 @@ static bool intbit(int n, int pos) {
   return ((n >> pos) & 1) == 1;
 }
 
-static size_t stack_count_zero_bits(t_stack *s, int bit) {
-  size_t i = 0;
-  size_t count = 0;
-
-  while (i < s->size) {
-    if (!((s->stack[i] >> bit) & 1))
-      count++;
-    i++;
-  }
-  return (count);
-}
-
 static void radix_bit(t_stack *a, t_stack *b, int bit) {
   size_t i = 0;
   size_t count = a->size;
@@ -41,9 +29,16 @@ static void radix_bit(t_stack *a, t_stack *b, int bit) {
 }
 
 static int msb_pos_int(int x) {
+  int pos;
+
   if (x == 0)
-    return -1;
-  return 31 - __builtin_clz((unsigned int)x);
+    return (-1);
+  pos = 0;
+  while ((unsigned int)x > 1) {
+    x >>= 1;
+    pos++;
+  }
+  return (pos);
 }
 
 static int stack_max(t_stack *s) {
