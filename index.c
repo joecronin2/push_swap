@@ -1,11 +1,24 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   index.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jcronin <jcronin@student.codam.nl>         +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/02/17 20:47:01 by jcronin           #+#    #+#             */
+/*   Updated: 2026/02/17 20:47:14 by jcronin          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "push_swap.h"
 #include "utils.h"
 
 static void	stack_sort(t_stack *s)
 {
-	int	tmp;
+	int		tmp;
+	size_t	i;
+	size_t	j;
 
-	size_t i, j;
 	i = 0;
 	while (i < s->size)
 	{
