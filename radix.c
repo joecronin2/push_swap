@@ -1,7 +1,6 @@
-#include <unistd.h>
-#include <limits.h>
 #include "utils.h"
-
+#include <limits.h>
+#include <unistd.h>
 
 static bool intbit(int n, int pos) {
   if (pos > 31)
@@ -9,20 +8,32 @@ static bool intbit(int n, int pos) {
   return ((n >> pos) & 1) == 1;
 }
 
+static size_t stack_count_zero_bits(t_stack *s, int bit) {
+  size_t i = 0;
+  size_t count = 0;
+
+  while (i < s->size) {
+    if (!((s->stack[i] >> bit) & 1))
+      count++;
+    i++;
+  }
+  return (count);
+}
 
 static void radix_bit(t_stack *a, t_stack *b, int bit) {
   size_t i = 0;
+  size_t zeros = stack_count_zero_bits(a, bit);
+  if (zeros == 0)
+    return;
   // if (stack_is_sorted(a))
   //   return;
-  while (i < a->size) {
+  size_t count = a->size;
+  while (i < count && zeros > 0) {
     int atop = a->stack[a->size - 1];
     if (!intbit(atop, bit)) {
       stack_push(a, b);
       write(1, "pb\n", 3);
-      if (b->size > 1 && b->stack[0] < b->stack[1]) {
-        stack_rotate_up(b);
-        write(1, "rb\n", 3);
-      }
+			zeros--;
     } else {
       stack_rotate_up(a);
       write(1, "ra\n", 3);
@@ -35,7 +46,6 @@ static void radix_bit(t_stack *a, t_stack *b, int bit) {
   }
 }
 
-	
 static int msb_pos_int(int x) {
   if (x == 0)
     return -1;
@@ -60,4 +70,3 @@ void radix(t_stack *a, t_stack *b) {
   while (i < bits) // max
     radix_bit(a, b, i++);
 }
-
