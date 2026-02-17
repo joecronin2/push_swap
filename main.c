@@ -121,7 +121,7 @@ int	main(int argc, char **argv)
 	b = alloc_stack(a->size);
 	if (!b)
 		return (free_stack(a), error());
-	solve(a,b);
+	solve(a, b);
 	return (free_stack(a), free_stack(b), 0);
 }
 

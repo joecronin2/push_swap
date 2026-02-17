@@ -57,13 +57,13 @@ bool	arr_eq(int *a, int *b, size_t size)
 
 void	test_rotate(void)
 {
-		int orig[] = {1, 2, 3, 4, 5};
+	int		orig[] = {1, 2, 3, 4, 5};
 	t_stack	*s;
-		int orig[] = {1, 2};
+	int		orig[] = {1, 2};
 	t_stack	*s;
-		int orig[] = {1};
+	int		orig[] = {1};
 	t_stack	*s;
-		int orig[] = {1, 2, 3, 4};
+	int		orig[] = {1, 2, 3, 4};
 	t_stack	*s;
 
 	// {
