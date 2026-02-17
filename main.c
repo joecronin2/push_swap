@@ -123,6 +123,8 @@ int	main(int argc, char **argv)
 		return (free_stack(a), error());
 	if (a->size == 3)
 		sort_three(a);
+	else if (a->size == 5)
+		sort_five(a, b);
 	else
 		radix(a, b);
 	return (free_stack(a), free_stack(b), 0);
