@@ -57,3 +57,12 @@ void sort_five(t_stack *a, t_stack *b) {
   stack_push(b, a);
   write(1, "pa\n", 3);
 }
+
+void solve(t_stack *a, t_stack *b) {
+  if (a->size == 3)
+    sort_three(a);
+  else if (a->size == 5)
+    sort_five(a, b);
+  else
+    radix(a, b);
+}
