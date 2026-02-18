@@ -1,13 +1,23 @@
 CC = cc
-CFLAGS = -Wall -Wextra -g -I$(LIBFT_DIR) # TODO
+CFLAGS = -Wall -Wextra -g -I$(LIBFT_DIR)
 
 LIBFT_DIR = ./libft
 LIBFT = $(LIBFT_DIR)/libft.a
-CFLAGS += -I$(LIBFT_DIR)
 
 NAME = push_swap
-SRCS = main.c stack.c utils.c radix.c ops.c index.c sort.c
-OBJS = $(SRCS:.c=.o)
+
+SRC_DIR = ./src
+BUILD_DIR = ./build
+
+SRCS = main.c \
+       stack.c \
+       utils.c \
+       radix.c \
+       ops.c \
+       index.c \
+       sort.c
+
+OBJS = $(SRCS:%.c=$(BUILD_DIR)/%.o)
 
 all: $(NAME)
 
@@ -17,21 +27,18 @@ $(LIBFT):
 $(NAME): $(OBJS) $(LIBFT)
 	$(CC) $(CFLAGS) $(OBJS) $(LIBFT) -o $(NAME)
 
-%.o: %.c
+$(BUILD_DIR)/%.o: $(SRC_DIR)/%.c
+	@mkdir -p $(BUILD_DIR)
 	$(CC) $(CFLAGS) -c $< -o $@
 
-all: $(NAME)
-
 clean:
-	rm -f $(OBJS) 
+	rm -rf $(BUILD_DIR)
 	$(MAKE) -C $(LIBFT_DIR) clean
 
 fclean: clean
 	rm -f $(NAME)
 	$(MAKE) -C $(LIBFT_DIR) fclean
 
-re: fclean 
-	$(MAKE) all
+re: fclean all
 
 .PHONY: all clean fclean re
-
