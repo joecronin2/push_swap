@@ -10,13 +10,10 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <libft.h>
 #include "push_swap.h"
-#include "utils.h"
+#include <libft.h>
 #include <limits.h>
 #include <stdbool.h>
-#include <stdio.h> // TODO
-#include <stdlib.h>
 #include <unistd.h>
 
 // void pss(t_stack *a, t_stack *b) {
@@ -95,15 +92,11 @@ bool	stack_is_sorted(t_stack *s)
 	return (true);
 }
 
-int	error(void)
-{
-	write(1, "Error\n", 6);
-	return (1);
-}
-
 t_stack	*prepare_stack(int *nums, size_t size)
 {
-	t_stack *a, *indexed;
+	t_stack	*a;
+	t_stack	*indexed;
+
 	a = init_stack(nums, size);
 	if (!a || has_duplicates(a))
 		return (free_stack(a), NULL);
@@ -118,28 +111,20 @@ int	main(int argc, char **argv)
 	t_stack	*a;
 	int		*nums;
 
-	// test();
 	if (argc < 2)
-		return (error());
+		return (write(1, "Error\n", 6), 0);
 	nums = parse_ints(&argv[1], argc - 1);
 	if (!nums)
-		return (error());
+		return (write(1, "Error\n", 6), 0);
 	a = prepare_stack(nums, argc - 1);
 	free(nums);
 	if (!a)
-		return (error());
+		return (write(1, "Error\n", 6), 0);
 	if (stack_is_sorted(a))
-		return (0);
+		return (free_stack(a), 0);
 	b = alloc_stack(a->size);
 	if (!b)
-		return (free_stack(a), error());
+		return (free_stack(a), write(1, "Error\n", 6), 0);
 	solve(a, b);
 	return (free_stack(a), free_stack(b), 0);
 }
-
-// TODO:
-// 2 1 0: 2 or 3 ops
-// 1 5 2 4 3: 12 ops
-// 5 random: 12 ops
-// 100: 700 ops
-// 500: 5500 ops

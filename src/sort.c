@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "utils.h"
+#include "push_swap.h"
 #include <unistd.h>
 
 void	sort_three(t_stack *s)

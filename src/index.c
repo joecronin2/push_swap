@@ -11,7 +11,6 @@
 /* ************************************************************************** */
 
 #include "push_swap.h"
-#include "utils.h"
 
 static void	stack_sort(t_stack *s)
 {

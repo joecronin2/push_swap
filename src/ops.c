@@ -10,8 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <libft.h>
 #include "push_swap.h"
+#include <libft.h>
 #include <stdbool.h>
 
 void	stack_swap(t_stack *s)

@@ -10,41 +10,35 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "utils.h"
+#include "push_swap.h"
 #include <limits.h>
 #include <unistd.h>
 
-static bool	intbit(int n, int pos)
+static void	partition_by_bit(t_stack *a, t_stack *b, int bit)
 {
-	if (pos > 31)
-		return (false);
-	return (((n >> pos) & 1) == 1);
+	int	atop;
+
+	atop = a->stack[a->size - 1];
+	if (!((atop >> bit) & 1))
+	{
+		stack_push(a, b);
+		write(1, "pb\n", 3);
+	}
+	else
+	{
+		stack_rotate_up(a);
+		write(1, "ra\n", 3);
+	}
 }
 
 static void	radix_bit(t_stack *a, t_stack *b, int bit)
 {
-	size_t	i;
-	size_t	count;
-	int		atop;
+	size_t	size;
 
-	i = 0;
-	count = a->size;
-	while (i < count)
-	{
-		atop = a->stack[a->size - 1];
-		if (!intbit(atop, bit))
-		{
-			stack_push(a, b);
-			write(1, "pb\n", 3);
-		}
-		else
-		{
-			stack_rotate_up(a);
-			write(1, "ra\n", 3);
-		}
-		i++;
-	}
-	while (b->size > 0)
+	size = a->size;
+	while (size--)
+		partition_by_bit(a, b, bit);
+	while (b->size)
 	{
 		stack_push(b, a);
 		write(1, "pa\n", 3);
@@ -91,6 +85,6 @@ void	radix(t_stack *a, t_stack *b)
 	i = 0;
 	max = stack_max(a);
 	bits = msb_pos_int(max) + 1;
-	while (i < bits && !stack_is_sorted(a)) // max
+	while (i < bits && !stack_is_sorted(a))
 		radix_bit(a, b, i++);
 }

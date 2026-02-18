@@ -11,8 +11,8 @@
 /* ************************************************************************** */
 
 #include <libft.h>
-#include "utils.h"
 #include <limits.h>
+#include <stdbool.h>
 
 // expects valid, null terminated int.
 bool	ft_strtoi(const char *str, int *out)
