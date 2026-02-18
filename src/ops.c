@@ -20,9 +20,9 @@ void	stack_swap(t_stack *s)
 
 	if (s->size < 2)
 		return ;
-	tmp = s->stack[s->size];
-	s->stack[s->size] = s->stack[s->size - 1];
-	s->stack[s->size - 1] = tmp;
+	tmp = s->stack[s->size - 1];
+	s->stack[s->size - 1] = s->stack[s->size - 2];
+	s->stack[s->size - 2] = tmp;
 }
 
 bool	stack_push(t_stack *from, t_stack *to)
