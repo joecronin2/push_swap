@@ -54,5 +54,10 @@ The correctness of the output can be verified with the provided checker as such:
 
 ```ARG="8 2 4 0" ; ./push_swap $ARG | ./checker_OS $ARG```
 
+Random numbers for testing can be generated as such:
+```shuf -i 0-1000 -n 500```
+Or like this (includes negative numbers):
+```seq -1000 1000 | shuf -n 400```
+
 ## Resources
 I used mainly search engines when needed. The only thing in this project that was new to me was the logic of the radix sort. I questioned LLMs about the process of the radix sort to get an understanding. No AI was used to write, debug, or automate writing code in this project. 
