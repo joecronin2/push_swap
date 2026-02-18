@@ -112,19 +112,19 @@ int	main(int argc, char **argv)
 	int		*nums;
 
 	if (argc < 2)
-		return (write(1, "Error\n", 6), 0);
+		return (0);
 	nums = parse_ints(&argv[1], argc - 1);
 	if (!nums)
-		return (write(1, "Error\n", 6), 0);
+		return (write(1, "Error\n", 6), 1);
 	a = prepare_stack(nums, argc - 1);
 	free(nums);
 	if (!a)
-		return (write(1, "Error\n", 6), 0);
+		return (write(1, "Error\n", 6), 1);
 	if (stack_is_sorted(a))
 		return (free_stack(a), 0);
 	b = alloc_stack(a->size);
 	if (!b)
-		return (free_stack(a), write(1, "Error\n", 6), 0);
+		return (free_stack(a), write(1, "Error\n", 6), 1);
 	solve(a, b);
 	return (free_stack(a), free_stack(b), 0);
 }
