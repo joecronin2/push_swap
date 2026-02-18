@@ -1,5 +1,5 @@
 CC = cc
-CFLAGS = -Wall -Wextra -g -I$(LIBFT_DIR)
+CFLAGS = -Wall -Wextra -I$(LIBFT_DIR)
 
 LIBFT_DIR = ./libft
 LIBFT = $(LIBFT_DIR)/libft.a
